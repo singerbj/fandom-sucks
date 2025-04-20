@@ -1,0 +1,171 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 0 0% 15%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 92%;
+    --secondary-foreground: 0 0% 20%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 0 0% 92%;
+    --accent-foreground: 0 0% 20%;
+    --destructive: 0 0% 40%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 0 0% 70%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 10%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 15%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 90%;
+    --primary-foreground: 0 0% 10%;
+    --secondary: 0 0% 20%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 0% 60%;
+    --destructive-foreground: 0 0% 10%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 0 0% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Wiki content styling */
+.wiki-content {
+  @apply text-base;
+}
+
+.wiki-content table {
+  @apply border-collapse my-4 w-full;
+}
+
+.wiki-content table th {
+  @apply border p-2;
+}
+
+.wiki-content table th {
+  @apply bg-muted;
+}
+
+.wiki-content .va-infobox-title-main {
+  @apply text-xl;
+}
+
+.wiki-content .gallerybox {
+  @apply list-none;
+}
+
+.wiki-content a {
+  @apply text-primary underline;
+  @apply hover:text-primary/90;
+}
+
+.wiki-content img {
+  @apply max-w-full h-auto rounded-md my-4;
+}
+
+.wiki-content h1,
+.wiki-content h2,
+.wiki-content h3,
+.wiki-content h4,
+.wiki-content h5,
+.wiki-content h6 {
+  @apply font-bold mt-6 mb-4;
+}
+
+.wiki-content h2 {
+  @apply text-2xl;
+}
+
+.wiki-content h3 {
+  @apply text-xl;
+}
+
+.wiki-content h2,
+.wiki-content h3 {
+  @apply mt-12 relative before:content-[''] before:block before:h-px before:bg-gray-300 before:mb-8;
+}
+
+.wiki-content h4 {
+  @apply text-lg;
+}
+
+.wiki-content ul,
+.wiki-content ol {
+  @apply pl-6 my-4;
+}
+
+.wiki-content .gallery.mw-gallery-packed {
+  @apply pl-0;
+}
+
+.wiki-content ul {
+  @apply list-disc;
+}
+
+.wiki-content ol {
+  @apply list-decimal;
+}
+
+.wiki-content blockquote {
+  @apply border-l-4 border-muted pl-4 italic my-4;
+}
+
+.wiki-content pre,
+.wiki-content code {
+  @apply bg-muted p-1 rounded;
+}
+
+.wiki-content pre {
+  @apply p-4 my-4 overflow-x-auto;
+}
+
+.wiki-content .va-infobox {
+  @apply absolute right-6;
+}
+
+/* Hide some Fandom-specific elements that might appear in the parsed HTML */
+.wiki-content .fandom-community-header,
+.wiki-content .global-navigation,
+.wiki-content .site-footer,
+.wiki-content .ad-slot,
+.wiki-content .wds-global-footer,
+.wiki-content .wds-banner-notification,
+.wiki-content .WikiaBar,
+.wiki-content .WikiaRail,
+.wiki-content .WikiHeader,
+.wiki-content .page-header__actions-menu,
+.wiki-content .page-header__contribution,
+.wiki-content .page-header__contribution-buttons,
+.wiki-content .featured-video,
+.wiki-content .mcf-wrapper {
+  @apply hidden;
+}
