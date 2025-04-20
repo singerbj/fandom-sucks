@@ -78,7 +78,7 @@ export default function Home() {
         </motion.div>
       </main>
       <footer className="border-t py-6 text-center text-sm text-muted-foreground">
-        <p>Fandom Wiki Explorer &copy; {new Date().getFullYear()}</p>
+        <p>Made with ❤️</p>
       </footer>
     </div>
   );

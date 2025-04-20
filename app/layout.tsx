@@ -8,9 +8,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Fandom Wiki Explorer",
-  description: "Explore Fandom wikis with a clean, simplified interface",
-  generator: "v0.dev",
+  title: "Fandom Sucks",
+  description:
+    "So I made this site that allows you to explore Fandom wikis with a clean, simplified interface and without all the browser debilitating ads and bloat and bologna.",
 };
 
 export default function RootLayout({
