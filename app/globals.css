@@ -169,3 +169,11 @@
 .wiki-content .mcf-wrapper {
   @apply hidden;
 }
+
+.wiki-content [class^="mw-editsection"],
+.wiki-content figure figcaption a {
+  display: none;
+}
+.wiki-content figure p {
+  @apply text-xs mb-8;
+}
