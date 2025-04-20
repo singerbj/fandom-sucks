@@ -177,3 +177,8 @@
 .wiki-content figure p {
   @apply text-xs mb-8;
 }
+
+.wiki-content .messagebox {
+  color: inherit !important;
+  background: inherit !important;
+}
