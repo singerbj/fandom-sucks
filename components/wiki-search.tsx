@@ -149,7 +149,7 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
 
   return (
     <div className="relative">
-      <div className="flex w-full max-w-xl ml-auto">
+      <div className="flex w-full">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -176,7 +176,7 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
         <div
           id="search-results"
           ref={scrollContainerRef}
-          className="absolute z-10 mt-2 w-full max-w-xl bg-card rounded-md border shadow-lg max-h-80 overflow-auto"
+          className="absolute z-10 mt-2 w-full bg-card rounded-md border shadow-lg max-h-80 overflow-auto"
         >
           <ul className="py-2" ref={resultsRef}>
             {searchResults.map((result, index) => (
