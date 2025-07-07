@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import type { WikiPage } from "@/lib/types";
+import { popularWikis } from "../app/popularWikis";
 
 interface WikiPageListProps {
   wiki: string;
@@ -23,10 +24,12 @@ export default function WikiPageList({
   useEffect(() => {
     if (!wiki) return;
     // Format wiki name for display (copied from layout)
-    const wikiName = wiki
+    let wikiName = wiki
       .split(/[-_]/)
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
+    const found = popularWikis.find((w) => w.slug === wiki);
+    if (found) wikiName = found.name;
     const viewedWiki = { name: wikiName, slug: wiki };
     try {
       const key = "recentWikis";

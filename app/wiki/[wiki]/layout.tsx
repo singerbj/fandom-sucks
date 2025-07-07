@@ -2,6 +2,8 @@ import WikiSearch from "@/components/wiki-search";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
+import { popularWikis } from "../../popularWikis";
+
 export default async function WikiSubLayout({
   children,
   params,
@@ -12,10 +14,12 @@ export default async function WikiSubLayout({
   const wiki = (await params).wiki || "";
 
   // Format wiki name for display
-  const wikiName = wiki
+  let wikiName = wiki
     .split(/[-_]/)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+  const found = popularWikis.find((w) => w.slug === wiki);
+  if (found) wikiName = found.name;
 
   console.log("params");
   return (

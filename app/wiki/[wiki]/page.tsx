@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import WikiPageList from "@/components/wiki-page-list";
 import { fetchWikiPages } from "@/lib/wiki-api";
+import { popularWikis } from "../../popularWikis";
 
 export async function generateMetadata({
   params,
@@ -10,9 +11,13 @@ export async function generateMetadata({
 }) {
   const { wiki } = params;
 
+  let wikiName = wiki.charAt(0).toUpperCase() + wiki.slice(1);
+  const found = popularWikis.find((w) => w.slug === wiki);
+  if (found) wikiName = found.name;
+
   return {
-    title: `${wiki.charAt(0).toUpperCase() + wiki.slice(1)} Wiki Explorer`,
-    description: `Explore the ${wiki} Fandom wiki with a clean, simplified interface.`,
+    title: `${wikiName} Wiki Explorer`,
+    description: `Explore the ${wikiName} Fandom wiki with a clean, simplified interface.`,
   };
 }
 

@@ -4,6 +4,7 @@ import type React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
+import { popularWikis } from "../app/popularWikis";
 
 interface WikiSearchProps {
   wiki: string | undefined;
@@ -21,6 +22,19 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
   const router = useRouter();
   const [shortcutHint, setShortcutHint] = useState("Ctrl+Shift+F");
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Compute display name for wiki
+  let wikiName = wiki || "";
+  if (wikiName) {
+    const found = popularWikis.find((w) => w.slug === wikiName);
+    if (found) wikiName = found.name;
+    else {
+      wikiName = wikiName
+        .split(/[-_]/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    }
+  }
 
   // Autofocus on input when component mounts
   useEffect(() => {
@@ -144,7 +158,7 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={`Search ${wiki} wiki (${shortcutHint})...`}
+            placeholder={`Search ${wikiName} wiki (${shortcutHint})...`}
             className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             aria-autocomplete="list"
             aria-controls="search-results"
