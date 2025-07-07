@@ -13,6 +13,10 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [shortcutHint, setShortcutHint] = useState("Ctrl+Shift+F");
+  const [recentWikis, setRecentWikis] = useState<
+    { name: string; slug: string }[]
+  >([]);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
@@ -28,6 +32,19 @@ export default function Home() {
     return () => {
       window.removeEventListener("focus-wiki-search", handler);
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("recentWikis");
+        if (stored) {
+          setRecentWikis(JSON.parse(stored));
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
   }, []);
 
   return (
@@ -52,30 +69,81 @@ export default function Home() {
             <WikiAutocomplete />
           </div>
 
+          {recentWikis.length > 0 && (
+            <motion.div
+              className="mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className="text-2xl font-semibold mb-6">
+                Recently Viewed Wikis
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {recentWikis.map((wiki, index) => {
+                  const delay = 0.15 * (1 - Math.exp(-index / 2));
+                  return (
+                    <motion.div
+                      key={wiki.slug}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, delay }}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <Link
+                        href={`/wiki/${wiki.slug}`}
+                        className="block p-4 bg-card rounded-lg border shadow-sm hover:shadow-md transition-shadow"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium truncate whitespace-nowrap overflow-hidden">
+                            {wiki.name}
+                          </span>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+
           <div className="mt-12">
-            <h2 className="text-2xl font-semibold mb-6">
+            <motion.h2
+              className="text-2xl font-semibold mb-6"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
               Popular Fandom Wikis
-            </h2>
+            </motion.h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {popularWikis.map((wiki) => (
-                <motion.div
-                  key={wiki.slug}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <Link
-                    href={`/wiki/${wiki.slug}`}
-                    className="block p-4 bg-card rounded-lg border shadow-sm hover:shadow-md transition-shadow"
+              {popularWikis.map((wiki, index) => {
+                const delay = 0.15 * (1 - Math.exp(-index / 2));
+                return (
+                  <motion.div
+                    key={wiki.slug}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium truncate whitespace-nowrap overflow-hidden">
-                        {wiki.name}
-                      </span>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
+                    <Link
+                      href={`/wiki/${wiki.slug}`}
+                      className="block p-4 bg-card rounded-lg border shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium truncate whitespace-nowrap overflow-hidden">
+                          {wiki.name}
+                        </span>
+                        <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </motion.div>

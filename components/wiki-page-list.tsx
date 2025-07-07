@@ -1,45 +1,71 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { ChevronRight } from "lucide-react"
-import type { WikiPage } from "@/lib/types"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronRight } from "lucide-react";
+import type { WikiPage } from "@/lib/types";
 
 interface WikiPageListProps {
-  wiki: string
-  initialPages: WikiPage[]
+  wiki: string;
+  initialPages: WikiPage[];
 }
 
-export default function WikiPageList({ wiki, initialPages }: WikiPageListProps) {
-  const [pages, setPages] = useState<WikiPage[]>(initialPages)
-  const [isLoading, setIsLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(initialPages.length === 500)
-  const [continuation, setContinuation] = useState<string | null>(null)
+export default function WikiPageList({
+  wiki,
+  initialPages,
+}: WikiPageListProps) {
+  const [pages, setPages] = useState<WikiPage[]>(initialPages);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(initialPages.length === 500);
+  const [continuation, setContinuation] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!wiki) return;
+    // Format wiki name for display (copied from layout)
+    const wikiName = wiki
+      .split(/[-_]/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+    const viewedWiki = { name: wikiName, slug: wiki };
+    try {
+      const key = "recentWikis";
+      const existing = JSON.parse(localStorage.getItem(key) || "[]");
+      // Remove if already present (by slug)
+      const filtered = existing.filter((w: any) => w.slug !== wiki);
+      // Add to front
+      const updated = [viewedWiki, ...filtered].slice(0, 6);
+      localStorage.setItem(key, JSON.stringify(updated));
+    } catch (e) {
+      // ignore
+    }
+  }, [wiki]);
 
   const loadMorePages = async () => {
-    if (isLoading || !hasMore) return
+    if (isLoading || !hasMore) return;
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-      const response = await fetch(`/api/wiki/${wiki}/pages?continue=${continuation || ""}`)
-      const data = await response.json()
+      const response = await fetch(
+        `/api/wiki/${wiki}/pages?continue=${continuation || ""}`
+      );
+      const data = await response.json();
 
       if (data.pages && data.pages.length > 0) {
-        setPages([...pages, ...data.pages])
-        setContinuation(data.continuation)
-        setHasMore(!!data.continuation)
+        setPages([...pages, ...data.pages]);
+        setContinuation(data.continuation);
+        setHasMore(!!data.continuation);
       } else {
-        setHasMore(false)
+        setHasMore(false);
       }
     } catch (error) {
-      console.error("Error loading more pages:", error)
-      setHasMore(false)
+      console.error("Error loading more pages:", error);
+      setHasMore(false);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div>
@@ -55,12 +81,19 @@ export default function WikiPageList({ wiki, initialPages }: WikiPageListProps) 
               whileHover={{ scale: 1.02 }}
               className="bg-card rounded-lg border shadow-sm overflow-hidden"
             >
-              <Link href={`/wiki/${wiki}/${page.title.replace(/ /g, "_")}`} className="block p-4 h-full">
+              <Link
+                href={`/wiki/${wiki}/${page.title.replace(/ /g, "_")}`}
+                className="block p-4 h-full"
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium truncate">{page.title}</h3>
                   <ChevronRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
                 </div>
-                {page.length && <p className="text-sm text-muted-foreground mt-1">{page.length} bytes</p>}
+                {page.length && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {page.length} bytes
+                  </p>
+                )}
               </Link>
             </motion.div>
           ))}
@@ -80,7 +113,9 @@ export default function WikiPageList({ wiki, initialPages }: WikiPageListProps) 
       )}
 
       {!hasMore && pages.length > 0 && (
-        <p className="mt-8 text-center text-sm text-muted-foreground">All pages loaded</p>
+        <p className="mt-8 text-center text-sm text-muted-foreground">
+          All pages loaded
+        </p>
       )}
 
       {pages.length === 0 && (
@@ -89,5 +124,5 @@ export default function WikiPageList({ wiki, initialPages }: WikiPageListProps) 
         </div>
       )}
     </div>
-  )
+  );
 }
