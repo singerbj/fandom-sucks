@@ -41,7 +41,7 @@ export default async function WikiSubLayout({
               Exploring content from {wikiName} Fandom Wiki
             </p>
           </div>
-          <div className="flex-0 min-w-96 mb-4">
+          <div className="flex-1 mb-4">
             <WikiSearch wiki={wiki} />
           </div>
         </div>

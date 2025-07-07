@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import Script from "next/script";
 import Plausible from "plausible-tracker";
 import { useMemo } from "react";
+import GlobalShortcut from "@/components/GlobalShortcut";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,13 +44,14 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
+        <GlobalShortcut />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="fixed top-4 right-4 z-50">
+          <div className="fixed bottom-4 right-4 z-50">
             <ThemeToggle />
           </div>
           {children}

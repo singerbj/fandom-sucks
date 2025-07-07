@@ -15,13 +15,35 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
   const [isSearching, setIsSearching] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const resultsRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLUListElement>(null);
+  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const [shortcutHint, setShortcutHint] = useState("Ctrl+Shift+F");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Autofocus on input when component mounts
   useEffect(() => {
     inputRef.current?.focus();
+  }, []);
+
+  // Listen for custom event to focus search input
+  useEffect(() => {
+    const handler = () => {
+      inputRef.current?.focus();
+    };
+    window.addEventListener("focus-wiki-search", handler);
+    return () => {
+      window.removeEventListener("focus-wiki-search", handler);
+    };
+  }, []);
+
+  // Platform-specific shortcut hint
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      setShortcutHint(isMac ? "Cmd+Shift+F" : "Ctrl+Shift+F");
+    }
   }, []);
 
   // Debounced search function
@@ -103,19 +125,17 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
 
   // Scroll selected item into view
   useEffect(() => {
-    if (selectedIndex >= 0 && resultsRef.current) {
-      const selectedElement = resultsRef.current.children[
-        selectedIndex
-      ] as HTMLElement;
-      if (selectedElement) {
-        selectedElement.scrollIntoView({ block: "nearest" });
-      }
+    if (selectedIndex >= 0 && itemRefs.current[selectedIndex]) {
+      itemRefs.current[selectedIndex]?.scrollIntoView({
+        block: "nearest",
+        inline: "nearest",
+      });
     }
   }, [selectedIndex]);
 
   return (
     <div className="relative">
-      <div className="flex w-full max-w-lg">
+      <div className="flex w-full max-w-xl ml-auto">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
@@ -124,7 +144,7 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={`Search ${wiki} wiki...`}
+            placeholder={`Search ${wiki} wiki (${shortcutHint})...`}
             className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
             aria-autocomplete="list"
             aria-controls="search-results"
@@ -141,13 +161,16 @@ export default function WikiSearch({ wiki }: WikiSearchProps) {
       {searchResults.length > 0 && (
         <div
           id="search-results"
-          ref={resultsRef}
-          className="absolute z-10 mt-2 w-full max-w-lg bg-card rounded-md border shadow-lg max-h-80 overflow-auto"
+          ref={scrollContainerRef}
+          className="absolute z-10 mt-2 w-full max-w-xl bg-card rounded-md border shadow-lg max-h-80 overflow-auto"
         >
-          <ul className="py-2">
+          <ul className="py-2" ref={resultsRef}>
             {searchResults.map((result, index) => (
               <li key={index}>
                 <button
+                  ref={(el) => {
+                    itemRefs.current[index] = el;
+                  }}
                   onClick={() => handleResultClick(result.title)}
                   className={`w-full px-4 py-2 text-left transition-colors ${
                     index === selectedIndex

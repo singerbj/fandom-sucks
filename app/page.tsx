@@ -3,17 +3,32 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRef, useEffect, useState } from "react";
+import { popularWikis } from "./popularWikis";
+import WikiAutocomplete from "../components/wiki-autocomplete";
 
 export default function Home() {
   // Popular wikis for quick access
-  const popularWikis = [
-    { name: "Escape from Tarkov", slug: "escapefromtarkov" },
-    { name: "Marvel", slug: "marvel" },
-    { name: "Star Wars", slug: "starwars" },
-    { name: "Harry Potter", slug: "harrypotter" },
-    { name: "Game of Thrones", slug: "gameofthrones" },
-    { name: "Pokemon", slug: "pokemon" },
-  ];
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [shortcutHint, setShortcutHint] = useState("Ctrl+Shift+F");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      setShortcutHint(isMac ? "Cmd+Shift+F" : "Ctrl+Shift+F");
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = () => {
+      inputRef.current?.focus();
+    };
+    window.addEventListener("focus-wiki-search", handler);
+    return () => {
+      window.removeEventListener("focus-wiki-search", handler);
+    };
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -34,21 +49,7 @@ export default function Home() {
           </p>
 
           <div className="mb-12">
-            <form action="/wiki" className="flex w-full max-w-lg mx-auto gap-2">
-              <input
-                type="text"
-                name="wiki"
-                placeholder="Enter wiki subdomain (e.g., marvel, starwars)"
-                className="flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                required
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
-              >
-                Explore
-              </button>
-            </form>
+            <WikiAutocomplete />
           </div>
 
           <div className="mt-12">
@@ -67,7 +68,9 @@ export default function Home() {
                     className="block p-4 bg-card rounded-lg border shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">{wiki.name}</span>
+                      <span className="font-medium truncate whitespace-nowrap overflow-hidden">
+                        {wiki.name}
+                      </span>
                       <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     </div>
                   </Link>
