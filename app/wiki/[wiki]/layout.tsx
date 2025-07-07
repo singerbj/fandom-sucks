@@ -21,11 +21,10 @@ export default async function WikiSubLayout({
   const found = popularWikis.find((w) => w.slug === wiki);
   if (found) wikiName = found.name;
 
-  console.log("params");
   return (
     <>
       <div className="container mx-auto px-4 py-4">
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row">
           <div className="flex-1 mb-8">
             <Link
               href="/"

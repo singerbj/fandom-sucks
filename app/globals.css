@@ -182,3 +182,10 @@
   color: inherit !important;
   background: inherit !important;
 }
+
+@media (max-width: 758px) {
+  .wiki-content .va-infobox {
+    position: relative !important;
+    right: auto !important;
+  }
+}
